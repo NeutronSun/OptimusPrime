@@ -13,16 +13,17 @@ public class GuiData{
     public static int cont;
     public static ArrayList<JPanel> list;
     public static JPanel myP;
+    public static int lastNum;
     
-    public GuiData(BigInteger start, BigInteger n)
+    public GuiData(int cont)
     {
         myF = new JFrame();
         myC = myF.getContentPane();
-        nElement = new BigDecimal(n);
-        cont = 0;
+        this.cont = cont;
         list = new ArrayList<JPanel>();
         myP = new JPanel();
         firsRun = true;
+        lastNum = 0;
     }
 
     
@@ -52,20 +53,16 @@ public class GuiData{
 
     
 
-    public void updateLoadingBar(BigInteger n){
-        BigDecimal p = new BigDecimal(n);
-        MathContext mc = new MathContext(10, RoundingMode.HALF_UP);
-        BigDecimal s = p.divide(nElement,mc).multiply(BigDecimal.valueOf(100)).stripTrailingZeros();
-        if(s.scale() == 0){
-            System.out.println("update");
-            list.get(p.divide(nElement,mc).multiply(BigDecimal.valueOf(100)).intValue()).setBackground(Color.green);
-            if(firsRun){
-                for(int i = 0; i <= p.divide(nElement,mc).multiply(BigDecimal.valueOf(100)).intValue(); i++)
-                 list.get(i).setBackground(Color.green);
-            }
-            myC.removeAll();
-            updateScreen();
+    public void updateLoadingBar(int n){
+        int blocks = (int)((Double.parseDouble(String.valueOf(n))/Double.parseDouble(String.valueOf(cont)))*100);
+        for(int i = lastNum; i < blocks; i++){
+           
+            list.get(i).setBackground(Color.green);
         }
+        
+        lastNum = blocks;
+        myC.removeAll();
+        updateScreen();
 
 
     }

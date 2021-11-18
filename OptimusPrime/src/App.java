@@ -7,68 +7,60 @@ public class App {
 
 	public static void main(String[] args) {
 		BigInteger n = new  BigInteger("10");
-		n = n.pow(1);
-		BigInteger end = new  BigInteger("10");
-		end = end.pow(5);
-		BigInteger cont = new BigInteger("0");
-        long timeS = 0;
-		GuiData g = new GuiData(n, end);
-		g.inizializeFrame();
+		int cont = 0;
+		Scanner in = new Scanner(System.in);
 		
-		if(n.equals(BigInteger.ONE))
-			n = n.add(BigInteger.ONE);
 
 		try{
-			FileWriter a, b, c;
-
-			a = new FileWriter("alg1.txt", false);
-			b = new FileWriter("alg2.txt", false);
-			c = new FileWriter("alg3.txt", false);
-
-			if(n.equals(BigInteger.TWO)){
-			   b.write("Prime: 2| Time: undefined nanosec\n" );
-			   c.write("Prime: 2| Time: undefined nanosec\n" );
-			}
-			else if(n.mod(BigInteger.TWO).equals(BigInteger.ZERO))
-				n=n.add(BigInteger.ONE);
 			
-			for(BigInteger i = n; i.min(end) == i; i = i.add(BigInteger.valueOf(1))){
-
-				timeS = System.nanoTime();
-				/*
-				if(slowOne(i))
-					a.write("Prime: " + i + "| Time: " + (System.nanoTime() - timeS) + " nanosec" + "\n" );
+			System.out.println("Choose the algorithm");
+			System.out.println("|1: Really slow\n|2: not so much slow\n|3:Fermats");
+			int choice, digits = 0;
+			do{
+				choice = in.nextInt();
+			}while(choice > 3 || choice < 1);
+			System.out.print("Choose the number of digits: ");
+			digits = in.nextInt();
+			n = n.pow(digits);
+			FileWriter c = new FileWriter(digits + "digitsPrimeNumber.txt", false);
+			System.out.println("how many number would you like to find?");
+			int nToFind = in.nextInt();
+			if(n.mod(BigInteger.TWO).equals(BigInteger.ZERO))
+			 n=n.add(BigInteger.ONE);
+			GuiData g = new GuiData(nToFind);
+			g.inizializeFrame();
+			for(BigInteger i = n; cont < nToFind; i = i.add(BigInteger.valueOf(2))){
 				
-				timeS = System.nanoTime();
-				if(!(i.mod(BigInteger.TWO).equals(BigInteger.ZERO)) && slowThree(i))
-					b.write("Prime: " + i + "| Time: " + (System.nanoTime() - timeS) + " nanosec" + "\n" );
-				*/
-				timeS = System.nanoTime();
-				if(!(i.mod(BigInteger.TWO).equals(BigInteger.ZERO)) && littleFermat(new BigInteger("2"), i)){
-					c.write(cont + "|Prime: " + i + "| Time: " + (System.nanoTime() - timeS) + " nanosec" + "\n" );
-					cont = cont.add(BigInteger.ONE);
+				if(choice == 1 && slowOne(i)){
+					c.write(i.toString() + "\n");
+					cont++;
+					System.out.println((nToFind-cont) + " numbers left");
+					g.updateLoadingBar(cont);
 				}
-				g.updateLoadingBar(i);
-				System.out.println(i);
+				
+				if(choice == 2 && slowThree(i)){
+					c.write(i.toString() + "\n");
+					cont++;
+					System.out.println((nToFind-cont) + " numbers left");
+					g.updateLoadingBar(cont);
+				}
+				
+				if(littleFermat(new BigInteger("2"), i) && choice == 3){
+					c.write(i.toString() + "\n");
+					cont++;
+					System.out.println((nToFind-cont) + " numbers left");
+					g.updateLoadingBar(cont);
+				}
+
 			}
-			a.flush();
-			b.flush();
 			c.flush();
 			System.out.println("End");
-			}catch(IOException e){}
+			}catch(IOException e){System.out.println("REG");}
 }
 
 	
 	public static boolean slowOne(BigInteger x){
 		for(BigInteger j = BigInteger.valueOf(2); j.min(x.divide(BigInteger.valueOf(2)).add(BigInteger.ONE)) == j ; j = j.add(BigInteger.ONE)){
-			if(x.mod(j).equals(BigInteger.ZERO))
-				return false;
-		}
-		return true;
-	}
-
-	public static boolean slowTwo(BigInteger x){
-		for(BigInteger j = BigInteger.valueOf(3); j.min(x.divide(BigInteger.valueOf(2)).add(BigInteger.ONE)) == j ; j = j.add(BigInteger.TWO)){
 			if(x.mod(j).equals(BigInteger.ZERO))
 				return false;
 		}
